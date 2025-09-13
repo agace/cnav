@@ -1,6 +1,6 @@
 [package]
 name = "cnav"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Bryan Charles <bryancharlesdnz@gmail.com>"]
 description = "A fast code navigation tool powered by ripgrep for quickly finding and jumping to symbols in your codebase"
