@@ -74,7 +74,7 @@ fn main() {
 
     // check tmux 
     if tmux_mode && std::env::var("TMUX").is_err() {
-        eprintln!("error: The --tmux option requires an active tmux session.");
+        eprintln!("error: the tmux option requires an active tmux session.");
         std::process::exit(1);
     }
 
