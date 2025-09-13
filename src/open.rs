@@ -1,4 +1,5 @@
 use std::process::Command;
+use std::path::Path;
 use crate::types::Match;
 
 fn build_editor_command(editor: &str, file: &str, line: usize) -> (String, Vec<String>) {
@@ -19,22 +20,39 @@ fn build_editor_command(editor: &str, file: &str, line: usize) -> (String, Vec<S
     }
 }
 
+pub fn command_exists(command: &str) -> bool {
+
+    if command.contains('/') {
+        return Path::new(command).exists();
+    }
+    
+    if let Ok(path) = std::env::var("PATH") {
+        for dir in path.split(':') {
+            let full_path = Path::new(dir).join(command);
+            if full_path.exists() {
+                return true;
+            }
+        }
+    }
+    
+    false
+}
+
 pub fn open_in_editor(chosen: &Match, use_tmux: bool, editor: &str) {
     let (program, args) = build_editor_command(editor, &chosen.file, chosen.line);
 
-    if use_tmux && std::env::var("TMUX").is_ok() {
+    if use_tmux {
         Command::new("tmux")
             .arg("split-window")
             .arg("-h")
             .arg(&program)
             .args(&args)
             .status()
-            .unwrap_or_else(|e| panic!("Failed to launch tmux split with {}: {}", editor, e));
+            .expect("Failed to open in tmux split");
     } else {
         Command::new(&program)
             .args(&args)
             .status()
-            .unwrap_or_else(|e| panic!("Failed to launch {}: {}", editor, e));
+            .expect("Failed to launch editor");
     }
 }
-

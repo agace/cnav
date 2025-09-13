@@ -5,7 +5,7 @@ mod open;
 
 use clap::{Arg, Command as ClapCommand};
 use crate::search::search_symbol;
-use crate::open::open_in_editor;
+use crate::open::{open_in_editor, command_exists};
 
 fn main() {
     let matches = ClapCommand::new("cnav")
@@ -66,11 +66,23 @@ fn main() {
 
     let editor = editor_owned.as_str();
 
+    // check editor
+    if !command_exists(editor) {
+        eprintln!("error: editor '{}' not found.", editor);
+        std::process::exit(1);
+    }
+
+    // check tmux 
+    if tmux_mode && std::env::var("TMUX").is_err() {
+        eprintln!("error: The --tmux option requires an active tmux session.");
+        std::process::exit(1);
+    }
+
     // search
     let results = search_symbol(path, symbol);
 
     if results.is_empty() {
-        println!("No matches found for '{}'", symbol);
+        println!("error: no matches found for '{}'", symbol);
         return;
     }
 
