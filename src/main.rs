@@ -9,7 +9,7 @@ use crate::open::{open_in_editor, command_exists};
 
 fn main() {
     let matches = ClapCommand::new("cnav")
-        .version("0.1.0")
+        .version("0.2.1")
         .author("Bryan Charles bryancharlesdnz@gmail.com")
         .about("Navigate code at terminal velocity. An interactive bridge between ripgrep and your terminal editor.")
 
